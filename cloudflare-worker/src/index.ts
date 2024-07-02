@@ -13,6 +13,15 @@ app.post("/embedding", async (c:any) => {
   return c.json({ vectors });
 });
 
+app.post("/llm",async (c:any)=>{
+  const { llmPromptArray } = await c.req.json();
+  const { response } = await c.env.AI.run(c.env.LLM_MODEL, {
+    messages: llmPromptArray.map((prompt:any) => ({ role:prompt.role, content: prompt.content })),
+  }
+  );
+  return c.json({ response });
+})
+
 app.onError((err:any, c) => {
   console.log("err : ", err);
   return c.text(err.message, err.status ? err.status: 500);

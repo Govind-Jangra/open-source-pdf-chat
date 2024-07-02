@@ -1,0 +1,22 @@
+name: Deploy Cloudflare worker
+
+on:
+  push:
+    paths:
+      - .github/workflows/deploy.yml
+      - cloudflare-worker/**
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    environment: 'main'
+    defaults:
+      run:
+        working-directory: "cloudflare-worker"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy cloudflare worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

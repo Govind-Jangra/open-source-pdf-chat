@@ -15,14 +15,41 @@ describe('Worker', () => {
 		await worker.stop();
 	});
 
-	it('should return 200 response', async () => {
-		const resp = await worker.fetch();
-		expect(resp.status).toBe(200);
+	it('should return healthcheck message', async () => {
+		const res = await worker.fetch('/healthcheck', { method: 'POST' });
+		const json = await res.json();
+		expect(res.status).toBe(200);
+		expect(json).toEqual({ message: 'worker is running' });
 	});
 
-	it('should return the text Hello World!', async () => {
-		const resp = await worker.fetch();
-		const text = await resp.text();
-		expect(text).toBe('Hello World!');
+	it('should return embeddings', async () => {
+		const requestPayload = { text: 'test text' };
+		const res = await worker.fetch('/embedding', {
+			method: 'POST',
+			body: JSON.stringify(requestPayload),
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		});
+		const json:any = await res.json();
+		expect(res.status).toBe(200);
+		expect(json.vectors.length).toBe(768);
+	});
+
+	it('should return LLM response', async () => {
+		const requestPayload = {
+			llmPromptArray: [{ role: 'user', content: 'hello' }]
+		};
+		let res = await worker.fetch('/llm', {
+			method: 'POST',
+			body: JSON.stringify(requestPayload),
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		});
+
+		const responseJson:any = (await res.json());
+		expect(res.status).toBe(200);
+		expect(responseJson.response.length).toBeGreaterThan(0) ;
 	});
 });

@@ -1,4 +1,4 @@
-name: Deploy Cloudflare worker
+name: Deploy Cloudflare Worker
 
 on:
   push:
@@ -11,12 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     environment: 'main'
-    defaults:
-      run:
-        working-directory: "cloudflare-worker"
     steps:
-      - uses: actions/checkout@v4
-      - name: Deploy cloudflare worker
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        
+      - name: Navigate to Cloudflare Worker directory
+        run: cd cloudflare-worker
+
+      - name: Deploy Cloudflare Worker
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -2,25 +2,19 @@
 import React, { useEffect, useState } from 'react';
 
 type Props = {
-  pdf_url: string;
+	pdf_url: string;
 };
 
 const PDFViewer = ({ pdf_url }: Props) => {
-  const [iframeUrl, setIframeUrl] = useState('');
+	const [iframeUrl, setIframeUrl] = useState('');
 
-  useEffect(() => {
-    const encodedUrl = encodeURIComponent(pdf_url);
-    const googleDocsUrl = `https://docs.google.com/viewer?embedded=true&url=${encodedUrl}`;
-    setIframeUrl(googleDocsUrl);
-  }, [pdf_url]);
+	useEffect(() => {
+		const encodedUrl = encodeURIComponent(pdf_url);
+		const googleDocsUrl = `https://docs.google.com/viewer?embedded=true&url=${encodedUrl}`;
+		setIframeUrl(googleDocsUrl);
+	}, [pdf_url]);
 
-  return (
-    <iframe
-      src={iframeUrl}
-      className="w-full h-full"
-      title="PDF Viewer"
-    ></iframe>
-  );
+	return <iframe src={iframeUrl} className="w-full h-full" title="PDF Viewer"></iframe>;
 };
 
 export default PDFViewer;

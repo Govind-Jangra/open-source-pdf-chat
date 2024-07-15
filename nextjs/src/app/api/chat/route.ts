@@ -19,18 +19,10 @@ export async function POST(req: Request) {
 		const context = await getQualifiedContext(lastMessage.content, fileKey);
 		const prompt = {
 			role: 'system',
-			content: `
-            You are an advanced PDF + chatbot AI assistant with expert knowledge, helpfulness, cleverness, and articulateness. Respond with well mannered, polite, and professional tone.
-            CONTEXT:
+			content: `You are pdf chatbot where you will be provided the context answer the question from the context. If the question is simply conversational answer them accordingly.Be polite and humble.If you are unable to answer simply say "I'm sorry, I don't have information on that topic."
+            This is the START CONTEXT:
             ${context}
-            END CONTEXT
-
-            Guidelines:
-            1. Analyse question firstly and if the question is in a specific language, respond in the same language.
-            2. Provide accurate and helpful answers based on the given context and your knowledge.
-            3. If the question is completely unrelated to the given context or beyond your capabilities, respond with: "I'm sorry, I don't have information on that topic."
-            4. If appropriate, offer related information or ask clarifying questions to better assist the user.
-            `,
+            END CONTEXT`,
 		};
 
 		const response = await fetch(`${process.env.CLOUDFLARE_WORKER_URL}/llm`, {

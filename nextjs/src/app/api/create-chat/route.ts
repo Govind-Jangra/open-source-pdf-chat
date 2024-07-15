@@ -52,7 +52,6 @@ export async function POST(req: Request) {
 				userId: userId,
 			})
 		).toJSON();
-
 		return NextResponse.json({ pdfChatId: pdfChat._id }, { status: 201 });
 	} catch (err) {
 		console.error('Error creating chat:', err);

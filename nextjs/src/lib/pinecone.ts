@@ -23,18 +23,14 @@ type PDFPage = {
 export async function processPDFFromFirebase(fileKey: string) {
 	try {
 		const fileName = await downloadFromFirebase(fileKey);
-
 		if (!fileName) {
 			throw new Error('Failed to download file from Firebase');
 		}
 
 		const loader = new PDFLoader(fileName);
 		const pages = (await loader.load()) as PDFPage[];
-
 		const documents = await Promise.all(pages.map(processPDFPage));
-
 		const vectors = await Promise.all(documents.flat().map(embedDocumentContent));
-
 		const client = await initializePineconeClient();
 		const pineconeIndex = client.Index(process.env.PINECONE_INDEX as string);
 		const namespace = convertToASCII(fileKey);
@@ -56,7 +52,7 @@ async function embedDocumentContent(doc: Document): Promise<PineconeRecord> {
 			id: hash,
 			values: embeddings,
 			metadata: {
-				text: doc.metadata.text as string,
+				text: doc.pageContent as string,
 				pageNumber: doc.metadata.pageNumber as number,
 			},
 		};
@@ -75,7 +71,10 @@ async function processPDFPage(page: PDFPage) {
 	let { pageContent, metadata } = page;
 	pageContent = pageContent.replace(/\n/g, '');
 
-	const splitter = new RecursiveCharacterTextSplitter();
+	const splitter = new RecursiveCharacterTextSplitter({
+		chunkSize: 2000,
+		chunkOverlap: 200,
+	});
 	const docs = await splitter.splitDocuments([
 		new Document({
 			pageContent,

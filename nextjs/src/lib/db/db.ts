@@ -5,7 +5,7 @@ export default function dbConnectionFactory(MONGODB_URI: string) {
 	databaseConnection
 		.asPromise()
 		.then(() => console.log('Database connection established successfully.'))
-		.catch(err => console.error('Errpr connecting database error: ', err));
+		.catch(err => console.error('Error connecting database : ', err));
 
 	return databaseConnection;
 }

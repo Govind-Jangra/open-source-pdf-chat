@@ -14,7 +14,7 @@ export async function retrieveMatchesByEmbeddings(embeddings: number[], fileKey:
 
 		const queryResults = await index.namespace(namespace).query({
 			vector: embeddings,
-			topK: 5,
+			topK: 3,
 			includeMetadata: true,
 		});
 

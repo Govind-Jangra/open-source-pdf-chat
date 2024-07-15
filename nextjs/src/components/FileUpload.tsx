@@ -39,13 +39,11 @@ const FileUpload = () => {
 				toast.error('File is too large');
 				return;
 			}
-
 			try {
 				setUploading(true);
 
 				const fileStructure = `${pdfFile.name}`;
 				const storageRef = ref(storage, fileStructure);
-				console.log(storageRef);
 				const uploadTask = uploadBytesResumable(storageRef, pdfFile);
 
 				uploadTask.on(
@@ -66,7 +64,6 @@ const FileUpload = () => {
 								setUploading(false);
 								return;
 							}
-
 							mutate(
 								{
 									fileKey: fileStructure,
